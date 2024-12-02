@@ -1,0 +1,7 @@
+.button {
+
+    -fx-background-radius: 10px; /* Радіус закруглення */
+}
+.button:hover {
+    -fx-background-color: #0076b3; /* Колір кнопки при наведенні */
+}
