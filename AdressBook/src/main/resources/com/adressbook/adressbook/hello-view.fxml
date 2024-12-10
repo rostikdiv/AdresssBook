@@ -5,15 +5,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
 
-<GridPane alignment="center" hgap="10" stylesheets="@style.css" vgap="10" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.adressbook.adressbook.HelloController">
+<GridPane alignment="center" hgap="10" stylesheets="@style.css" vgap="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.adressbook.adressbook.HelloController">
    <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
       <children>
          <HBox prefHeight="100.0" prefWidth="600.0">
@@ -40,8 +40,8 @@
                <Insets left="30.0" right="30.0" />
             </VBox.margin>
             <children>
-               <TextField id="TextField" fx:id="textField" layoutY="30.0" prefHeight="40.0" prefWidth="310.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="230.0" />
                <Button fx:id="btnSearch" layoutX="400.0" layoutY="30.0" mnemonicParsing="false" onAction="#searching" prefHeight="40.0" prefWidth="140.0" text="Пошук" AnchorPane.rightAnchor="0.0" />
+               <CustomTextField fx:id="textField" layoutY="30.0" prefHeight="40.0" prefWidth="324.0" />
             </children>
          </AnchorPane>
          <AnchorPane prefHeight="300.0" prefWidth="600.0">
