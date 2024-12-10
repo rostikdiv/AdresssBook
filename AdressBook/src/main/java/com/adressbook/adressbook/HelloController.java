@@ -1,12 +1,16 @@
 package com.adressbook.adressbook;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -17,6 +21,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.control.textfield.TextFields;
+
 
 public class HelloController {
 
@@ -41,8 +48,7 @@ public class HelloController {
     private Button btnSearch;
 
     @FXML
-    private TextField textField;
-    @FXML
+    private CustomTextField textField;    @FXML
     private Button btnExit;
 
     @FXML
@@ -59,6 +65,8 @@ public class HelloController {
     public TableView<Person> tableAdressBook;
 
     private EntryTableController controller;
+    public ObservableList<Person> backupList = FXCollections.observableArrayList();
+
 
 
 
@@ -139,8 +147,50 @@ public class HelloController {
 
     @FXML
     void searching(ActionEvent event) {
+        initTable();
+        String searchText = textField.getText().trim().toLowerCase();
 
+        // Якщо текстове поле порожнє, повертаємо всі записи
+        if (searchText.isEmpty()) {
+            adressBookImpl.getPersonList().setAll(backupList);
+            return;
+        }
+
+        ObservableList<Person> filteredList = FXCollections.observableArrayList();
+
+        // Шукаємо записи, що містять введений текст
+        for (Person person : backupList) {
+            boolean matches = false;
+
+            // Перевіряємо поля, що можуть бути null
+            if (person.getPip() != null && person.getPip().toLowerCase().contains(searchText)) {
+                matches = true;
+            }
+            if (person.getPhone() != null && person.getPhone().toLowerCase().contains(searchText)) {
+                matches = true;
+            }
+
+            if (matches) {
+                filteredList.add(person);
+            }
+        }
+
+        // Оновлюємо список відфільтрованими записами
+        adressBookImpl.getPersonList().setAll(filteredList);
     }
+
+    private void setupClearButtonField(CustomTextField customTextField) {
+        try {
+            Method m = TextFields.class.getDeclaredMethod("setupClearButtonField", TextField.class, ObjectProperty.class);
+            m.setAccessible(true);
+            m.invoke(null, customTextField, customTextField.rightProperty());
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
     @FXML
     void showingOtherLabs(ActionEvent event) {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloController.class.getResource("showOtherLabs.fxml"));
@@ -176,22 +226,29 @@ public class HelloController {
         assert btnSearch != null : "fx:id=\"btnSearch\" was not injected: check your FXML file 'hello-view.fxml'.";
         assert textField != null : "fx:id=\"textField\" was not injected: check your FXML file 'hello-view.fxml'.";
 
+        setupClearButtonField(textField);
+
         initTable();
     }
 
-    public void initTable(){
+    public void initTable() {
         tableColumnPIP.setCellValueFactory(new PropertyValueFactory<>("pip"));
         tableColumnPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+
         adressBookImpl.getPersonList().addListener(new ListChangeListener<Person>() {
             @Override
             public void onChanged(Change<? extends Person> change) {
                 updateCountLabel();
             }
         });
+        backupList.clear();
+        backupList.addAll(adressBookImpl.getPersonList()); // Копіюємо початкові дані
         tableAdressBook.setItems(adressBookImpl.getPersonList());
 
 
+
     }
+
     private void updateCountLabel(){
         totalAmount.setText("кількість записів: "+ adressBookImpl.getPersonList().size());
     }
